@@ -1,7 +1,21 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import {
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  Container,
+  Table,
+} from "react-bootstrap";
+import MemberCard from "../components/MemberCard";
+import Loading from "../components/loader";
+import Message from "../components/message";
 
 function MemberList() {
   const [members, setMembers] = useState([]);
+  const [isGrid, setIsGrid] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -12,66 +26,106 @@ function MemberList() {
     })
       .then((res) => res.json())
       .then((data) => {
+        setLoading(false);
         if (Array.isArray(data)) {
           setMembers(data);
         } else if (Array.isArray(data.members)) {
           setMembers(data.members);
         } else {
-          console.error("Unexpected response format:", data);
+          setError("Unexpected response format");
         }
       })
-      .catch((err) => console.error("Fetch error:", err));
+      .catch((err) => {
+        setLoading(false);
+        setError("Failed to fetch members");
+      });
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold mb-6 text-center">All Members</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-          <thead className="bg-gray-100 text-gray-700">
+    <Container >
+      <Row className="justify-content-md-center mt-4 mb-4">
+
+        <Col xs lg="2"></Col>
+        <Col md="auto">
+          <ButtonGroup>
+            <Button
+              variant={isGrid ? "dark" : "outline-dark"}
+              onClick={() => setIsGrid(true)}
+            >
+              Grid
+            </Button>
+            <Button
+              variant={!isGrid ? "dark" : "outline-dark"}
+              onClick={() => setIsGrid(false)}
+            >
+              Table
+            </Button>
+          </ButtonGroup>
+        </Col>
+        <Col xs lg="2"></Col>
+      </Row>
+
+      <h1 >Members</h1>
+      {loading ? (
+        <Loading />
+      ) : error ? (
+        <Message variant="danger">{error}</Message>
+      ) : isGrid ? (
+        <Row>
+          {members.map((m) => (
+            <Col key={m._id} sm={12} md={6} lg={4} xl={3}>
+              <MemberCard member={m} />
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <Table striped bordered hover responsive className="table-sm">
+          <thead>
             <tr>
-              <th className="py-3 px-4 text-left">Image</th>
-              <th className="py-3 px-4 text-left">Name</th>
-              <th className="py-3 px-4 text-left">Email</th>
-              <th className="py-3 px-4 text-left">Father's Name</th>
-              <th className="py-3 px-4 text-left">Age</th>
-              <th className="py-3 px-4 text-left">Gender</th>
-              <th className="py-3 px-4 text-left">Join Date</th>
-              <th className="py-3 px-4 text-left">Phone</th>
-              <th className="py-3 px-4 text-left">Membership</th>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Father's Name</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Join Date</th>
+              <th>Phone</th>
+              <th>Membership</th>
             </tr>
           </thead>
           <tbody>
             {members.map((m) => (
-              <tr
-                key={m._id}
-                className="border-b border-gray-200 hover:bg-gray-50 transition"
-              >
-                <td className="py-3 px-4">
+              <tr key={m._id}>
+                <td>
                   {m.image ? (
                     <img
                       src={m.image}
                       alt={m.name}
-                      className="w-12 h-12 object-cover rounded-full border"
+                      style={{
+                        width: "40px",
+                        height: "40px",
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                      }}
                     />
                   ) : (
-                    <span className="text-gray-400 italic">No Image</span>
+                    <span className="text-muted">No Image</span>
                   )}
                 </td>
-                <td className="py-3 px-4">{m.name}</td>
-                <td className="py-3 px-4">{m.email}</td>
-                <td className="py-3 px-4">{m.fatherName}</td>
-                <td className="py-3 px-4">{m.age}</td>
-                <td className="py-3 px-4 capitalize">{m.gender}</td>
-                <td className="py-3 px-4">{new Date(m.joinDate).toLocaleDateString()}</td>
-                <td className="py-3 px-4">{m.phone}</td>
-                <td className="py-3 px-4 capitalize">{m.membershipType}</td>
+                <td>{m.name}</td>
+                <td>{m.email}</td>
+                <td>{m.fatherName}</td>
+                <td>{m.age}</td>
+                <td>{m.gender}</td>
+                <td>{new Date(m.joinDate).toLocaleDateString()}</td>
+                <td>{m.phone}</td>
+                <td>{m.membershipType}</td>
               </tr>
             ))}
           </tbody>
-        </table>
-      </div>
-    </div>
+        </Table>
+      )}
+    </Container>
   );
 }
 

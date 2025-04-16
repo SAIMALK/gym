@@ -6,6 +6,7 @@ import MemberList from "./screens/MemberList";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
 import HomeScreen from "./screens/homeScreen";
+import MemberDetailsView from "./screens/MemberDetailsView";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -17,7 +18,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 py-3">
       <Header isLoggedIn={isLoggedIn} logout={logout} />
         <Routes>
           <Route
@@ -41,6 +42,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MemberList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/member/:id"
+            element={
+              <ProtectedRoute>
+                <MemberDetailsView />
               </ProtectedRoute>
             }
           />

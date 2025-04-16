@@ -29,10 +29,7 @@ const getMembers = asyncHandler(async (req, res) => {
 
 const getMemberById = asyncHandler(async (req, res) => {
   const member = await Member.findById(req.params.id);
-  const memberAuthor = await Author.findById(member.author);
-
-  member.author = memberAuthor;
-  //   console.log(memberAuthor);
+  
   if (member) {
     res.json(member);
   } else {
