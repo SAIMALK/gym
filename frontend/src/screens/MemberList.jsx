@@ -10,7 +10,7 @@ import {
 import MemberCard from "../components/MemberCard";
 import Loading from "../components/loader";
 import Message from "../components/message";
-
+import { BASE_URL } from "../constants";
 function MemberList() {
   const [members, setMembers] = useState([]);
   const [isGrid, setIsGrid] = useState(true);
@@ -19,7 +19,7 @@ function MemberList() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:5000/api/members", {
+    fetch(`${BASE_URL}/api/members`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

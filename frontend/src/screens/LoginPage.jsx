@@ -1,5 +1,6 @@
 import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../constants";
 function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
   const [usernameEmpty, setUsernameEmpty] = useState(false);
@@ -25,7 +26,7 @@ function LoginPage({ onLogin }) {
       return;
     }
   
-    const res = await fetch("http://localhost:5000/api/auth/login", {
+    const res = await fetch(`${BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

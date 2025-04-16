@@ -10,7 +10,7 @@ import {
   Form,
   Container,
 } from "react-bootstrap";
-
+import { BASE_URL } from "../constants";
 const MemberDetailsView = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // useNavigate instead of history
@@ -23,7 +23,7 @@ const MemberDetailsView = () => {
   useEffect(() => {
     const fetchMember = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/members/${id}`);
+        const response = await fetch(`${BASE_URL}/api/members/${id}`);
         if (!response.ok) throw new Error("Failed to fetch member");
         const data = await response.json();
         setMember(data);
@@ -39,7 +39,7 @@ const MemberDetailsView = () => {
 
   const updateStatus = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/members/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/members/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...member, status }),

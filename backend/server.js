@@ -14,8 +14,8 @@ const port = process.env.PORT || 5001;
 connectDB();
 
 app.use(cors({
-  origin: 'http://localhost:5173', // frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  origin: ['http://localhost:5173','https://bodyfuel.netlify.app'], // frontend origin
+  
   credentials: true,
 }));
 
