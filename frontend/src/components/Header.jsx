@@ -30,7 +30,7 @@ const Header = ({ isLoggedIn, logout }) => {
                       <NavDropdown.Item onClick={addMember}> Add Member</NavDropdown.Item>
                     
                   
-                      <NavDropdown.Item onClick={logout}>View Analysis</NavDropdown.Item>
+                      <NavDropdown.Item >View Analysis</NavDropdown.Item>
                    
                   </NavDropdown >
 
