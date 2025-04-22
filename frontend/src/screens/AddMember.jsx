@@ -3,6 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormContainer from "../components/formContainer"; // Reuse same container
 import { BASE_URL } from "../constants";
+import { useNavigate } from "react-router-dom";
 function AddMember() {
   const [form, setForm] = useState({
     name: "",
@@ -15,7 +16,7 @@ function AddMember() {
     phone: "",
     membershipType: "",
   });
-
+   const navigate = useNavigate();
   const [useNowDate, setUseNowDate] = useState(false);
   const handleUseNowChange = (checked) => {
     setUseNowDate(checked);
@@ -59,6 +60,8 @@ const handleSubmit = async (e) => {
       membershipType: "",
     });
     setUseNowDate(false);
+    navigate("/members");
+    navigate("/");
   } catch (error) {
     alert("Error adding member.");
     console.error(error);
