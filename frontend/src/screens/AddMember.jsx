@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import FormContainer from "../components/formContainer"; // Reuse same container
-
+import { BASE_URL } from "../constants";
 function AddMember() {
   const [form, setForm] = useState({
     name: "",
@@ -26,11 +26,45 @@ function AddMember() {
       setForm((prevForm) => ({ ...prevForm, joinDate: "" }));
     }
   };
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Just a UI. Functionality not connected.");
+const handleSubmit = async (e) => {
+  e.preventDefault(); // <-- prevent reload
+  const token = localStorage.getItem("token");
+  const payload = {
+    ...form,
+    joinDate: useNowDate ? new Date().toISOString() : form.joinDate,
   };
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/members`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) throw new Error("Failed to add member");
+
+    alert("Member added!");
+    setForm({
+      name: "",
+      email: "",
+      image: "",
+      fatherName: "",
+      age: "",
+      gender: "",
+      joinDate: "",
+      phone: "",
+      membershipType: "",
+    });
+    setUseNowDate(false);
+  } catch (error) {
+    alert("Error adding member.");
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="p-4">
