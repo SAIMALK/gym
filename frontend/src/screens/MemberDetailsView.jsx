@@ -56,7 +56,7 @@ const MemberDetailsView = () => {
   const deleteMember = async () => {
     if (!window.confirm("Are you sure you want to delete this member?")) return;
     try {
-      const res = await fetch(`/api/members/${id}`, {
+      const res = await fetch(`${BASE_URL}/api/members/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) throw new Error("Failed to delete member");
