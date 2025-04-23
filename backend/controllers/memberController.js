@@ -29,14 +29,23 @@ const getMembers = asyncHandler(async (req, res) => {
 
 const getMemberById = asyncHandler(async (req, res) => {
   const member = await Member.findById(req.params.id);
-  
-  if (member) {
-    res.json(member);
-  } else {
+
+  if (!member) {
     res.status(404);
-    return next(new Error("Resource not found"));
+    throw new Error("Member not found");
   }
+
+  // Refresh status based on current date and membershipEndDate
+  const now = new Date();
+  const newStatus = now <= member.membershipEndDate ? "Active" : "Inactive";
+  if (member.status !== newStatus) {
+    member.status = newStatus;
+    await member.save();
+  }
+
+  res.json(member);
 });
+
 
 // @desc    Create a member
 // @route   POST /api/members
@@ -58,30 +67,63 @@ const updateMember = asyncHandler(async (req, res) => {
     fatherName,
     age,
     gender,
-    joinDate,
+    membershipStartDate,
     phone,
     membershipType,
   } = req.body;
 
   const member = await Member.findById(req.params.id);
 
-  if (member) {
-    member.name = name;
-    member.email = email;
-    member.image = image;
-    member.fatherName = fatherName;
-    member.age = age;
-    member.gender = gender;
-    member.joinDate = joinDate;
-    member.phone = phone;
-    member.membershipType = membershipType;
-    const updatedMember = await member.save();
-    res.json(updatedMember);
-  } else {
+  if (!member) {
     res.status(404);
     throw new Error("Member not found");
   }
+
+  // Update basic fields
+  member.name = name;
+  member.email = email;
+  member.image = image;
+  member.gender = gender;
+  member.phone = phone;
+  member.membershipType = membershipType;
+
+  // Set the new membershipStartDate
+  const startDate = new Date(membershipStartDate);
+  member.membershipStartDate = startDate;
+
+  // Calculate membershipEndDate based on membershipType
+  let endDate;
+  const durationMap = {
+    Daily: 1,
+    Monthly: 1,
+    Quarterly: 3,
+    HalfYearly: 6,
+    Yearly: 12,
+  };
+
+  const duration = durationMap[membershipType] || 1;
+
+  if (membershipType === "Daily") {
+    // Add days for daily membership
+    endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + duration);
+  } else {
+    // Add months for other membership types
+    endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + duration);
+  }
+
+  member.membershipEndDate = endDate;
+
+  // Auto-set status based on membershipEndDate
+  const now = new Date();
+  member.status = now <= endDate ? "Active" : "Inactive";
+
+  const updated = await member.save();
+  res.json(updated);
 });
+
+
 
 // @desc    Delete a member
 // @route   DELETE /api/members/:id

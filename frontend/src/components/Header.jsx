@@ -14,7 +14,7 @@ const Header = ({ isLoggedIn, logout }) => {
       <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
         <Container>
         
-            <Navbar.Brand onClick={home}>
+            <Navbar.Brand onClick={home} style={{ cursor: "pointer" }}>
                Body Fuel</Navbar.Brand>
           
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

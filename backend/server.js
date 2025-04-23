@@ -24,7 +24,9 @@ app.use(cors({
 app.use('/api/members', memberRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use("/api/auth", authRoute);
-
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
 app.use(notFound);
 app.use(errorHandler);
 

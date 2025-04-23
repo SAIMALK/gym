@@ -10,6 +10,7 @@ import {
 import MemberCard from "../components/MemberCard";
 import Loading from "../components/loader";
 import Message from "../components/message";
+import { Link } from "react-router-dom";
 import { BASE_URL } from "../constants";
 function MemberList() {
   const [members, setMembers] = useState([]);
@@ -94,35 +95,42 @@ function MemberList() {
             </tr>
           </thead>
           <tbody>
-            {members.map((m) => (
-              <tr key={m._id}>
-                <td>
-                  {m.image ? (
-                    <img
-                      src={m.image}
-                      alt={m.name}
-                      style={{
-                        width: "40px",
-                        height: "40px",
-                        objectFit: "cover",
-                        borderRadius: "50%",
-                      }}
-                    />
-                  ) : (
-                    <span className="text-muted">No Image</span>
-                  )}
-                </td>
-                <td>{m.name}</td>
-                <td>{m.email}</td>
-                <td>{m.fatherName}</td>
-                <td>{m.age}</td>
-                <td>{m.gender}</td>
-                <td>{new Date(m.joinDate).toLocaleDateString()}</td>
-                <td>{m.phone}</td>
-                <td>{m.membershipType}</td>
-              </tr>
-            ))}
-          </tbody>
+  {members.map((m) => (
+    <tr key={m._id}>
+      <td>
+        <Link to={`/member/${m._id}`}>
+          {m.image ? (
+            <img
+              src={m.image}
+              alt={m.name}
+              style={{
+                width: "40px",
+                height: "40px",
+                objectFit: "cover",
+                borderRadius: "50%",
+              }}
+            />
+          ) : (
+            <span className="text-muted">No Image</span>
+          )}
+        </Link>
+      </td>
+      <td>
+        <Link to={`/member/${m._id}`} style={{ textDecoration: "none" }}>
+          {m.name}
+        </Link>
+      </td>
+      <td>{m.email}</td>
+      <td>{m.fatherName}</td>
+      <td>{m.age}</td>
+      <td>{m.gender}</td>
+      <td>{new Date(m.joinDate).toLocaleDateString()}</td>
+      <td>{m.phone}</td>
+      <td>{m.membershipType}</td>
+    </tr>
+  ))}
+</tbody>
+
         </Table>
       )}
     </Container>

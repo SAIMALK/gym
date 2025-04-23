@@ -1,22 +1,24 @@
-import mongoose from 'mongoose';
+// models/Member.js
+import mongoose from "mongoose";
 
 const memberSchema = new mongoose.Schema({
   name: String,
   email: String,
-  image: String,
-  fatherName: String,
   phone: String,
-  membershipType: String,
-  age: Number,
   gender: String,
-  joinDate: {
-    type: Date,
-    default: Date.now,
+  image: String,
+  membershipType: {
+    type: String,
+    enum: ["Monthly", "Quarterly", "HalfYearly", "Yearly"],
   },
-  fingerprintId: {
-    type: Number,
-    default: null, // leave empty for now
+  membershipStartDate: { type: Date, required: true },
+  membershipEndDate: { type: Date, required: true },
+  status: {
+    type: String,
+    enum: ["Active", "Inactive"],
+    default: "Inactive",
   },
 });
 
-export default mongoose.model('Member', memberSchema);
+const Member = mongoose.model("Member", memberSchema);
+export default Member;

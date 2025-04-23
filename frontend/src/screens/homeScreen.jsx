@@ -1,6 +1,9 @@
 import React from "react";
 import { Carousel, Container, Row, Col, Card, Button } from "react-bootstrap";
-
+import dumbleImg from '../assets/dumble.jpg'; // adjust the path if necessary
+import Facilities from "../components/facilities";
+import Timings from "../components/timings";
+import Packages from "../components/packages";
 const HomeScreen = () => {
   return (
 
@@ -11,12 +14,12 @@ const HomeScreen = () => {
     <Carousel.Item>
       <img
         className="d-block w-100"
-        src="https://images.unsplash.com/photo-1576678927484-cc907957088c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGd5bXxlbnwwfHwwfHx8Mg%3D%3D"
+        src={dumbleImg}
         alt="First slide"
-        style={{ height: "400px", objectFit: "cover", borderRadius: "10px" }}
+        style={{ height: "450px", objectFit: "cover", borderRadius: "10px" }}
       />
       <Carousel.Caption>
-        <h3>Transform Your Body</h3>
+        <h3 style={{ color:"white" }}>Transform Your Body</h3>
         <p>Join our expert-led fitness programs today!</p>
       </Carousel.Caption>
     </Carousel.Item>
@@ -26,10 +29,11 @@ const HomeScreen = () => {
         className="d-block w-100"
         src="https://images.unsplash.com/photo-1546483875-ad9014c88eba?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDJ8fGd5bXxlbnwwfHwwfHx8MA%3D%3D"
         alt="Second slide"
-        style={{ height: "400px", objectFit: "cover", borderRadius: "10px" }}
+        style={{ height: "450px", objectFit: "cover", borderRadius: "10px" }}
       />
       <Carousel.Caption>
-        <h3>State-of-the-Art Equipment</h3>
+        <h4 style={{ color:"white" }}
+>State-of-the-Art Equipment</h4>
         <p>Train with top gear and cutting-edge machines.</p>
       </Carousel.Caption>
     </Carousel.Item>
@@ -38,47 +42,11 @@ const HomeScreen = () => {
 
 
       {/* Packages Section */}
-      <Container className="my-5">
-        <h2 className="text-center mb-4">Our Packages</h2>
-        <Row>
-          <Col md={4}>
-            <Card>
-              <Card.Body>
-                <Card.Title>Basic Plan</Card.Title>
-                <Card.Text>
-                  Access to gym equipment, open workout area, and locker room.
-                </Card.Text>
-                <Button variant="primary">Join Now</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col md={4}>
-            <Card>
-              <Card.Body>
-                <Card.Title>Pro Plan</Card.Title>
-                <Card.Text>
-                  Includes Basic + personal trainer sessions and diet plans.
-                </Card.Text>
-                <Button variant="primary">Join Now</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col md={4}>
-            <Card>
-              <Card.Body>
-                <Card.Title>Elite Plan</Card.Title>
-                <Card.Text>
-                  All features plus yoga, Zumba, steam room and spa access.
-                </Card.Text>
-                <Button variant="primary">Join Now</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-
+     <Packages/>
+ {/* Facilities Section */}
+    <Facilities/>
+ {/* Timings Section */}
+ <Timings/>
       {/* About Us Section */}
       <Container className="my-5">
         <h2 className="text-center mb-4">About Us</h2>

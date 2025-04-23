@@ -1,6 +1,0 @@
-@FingerprintAPI_HostAddress = http://localhost:5110
-
-GET {{FingerprintAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
