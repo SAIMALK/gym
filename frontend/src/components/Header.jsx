@@ -7,6 +7,7 @@ const Header = ({ isLoggedIn, logout }) => {
   // ✅ Handlers
   const viewMenbers = () => navigate("/members");
   const addMember = () => navigate("/add-member");
+  const ViewAttendance = () => navigate("/attendanceView");
   const login = () => navigate("/login");
   const home = () => navigate('/');
   return (
@@ -30,7 +31,7 @@ const Header = ({ isLoggedIn, logout }) => {
                       <NavDropdown.Item onClick={addMember}> Add Member</NavDropdown.Item>
                     
                   
-                      <NavDropdown.Item >View Analysis</NavDropdown.Item>
+                      <NavDropdown.Item onClick={ViewAttendance}>View Attendance</NavDropdown.Item>
                    
                   </NavDropdown >
 

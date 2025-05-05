@@ -119,6 +119,7 @@ const MemberDetailsView = () => {
                 <ListGroup.Item>Email: {member.email}</ListGroup.Item>
                 <ListGroup.Item>Phone: {member.phone}</ListGroup.Item>
                 <ListGroup.Item>Gender: {member.gender}</ListGroup.Item>
+                <ListGroup.Item>Member Id: {member._id}</ListGroup.Item>
               </ListGroup>
             </Col>
             <Col md={4}>

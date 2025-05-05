@@ -1,33 +1,21 @@
-// // import mongoose from 'mongoose';
+// attendance.model.js
+import mongoose from "mongoose";
 
-// // const attendanceSchema = new mongoose.Schema({
-// //   memberId: {
-// //     type: mongoose.Schema.Types.ObjectId,
-// //     ref: 'Member',
-// //   },
-// //   checkInTime: {
-// //     type: Date,
-// //     default: Date.now,
-// //   },
-// //   checkOutTime: Date,
-// //   date: {
-// //     type: Date,
-// //     default: () => new Date().toDateString(), // only store date portion
-// //   },
-// // });
+const attendanceSchema = new mongoose.Schema({
+    MemberId: {
+      type: Number, // Use integer to match the fingerprint system's member ID
+      required: true,
+      ref: 'Member',
+    },
+    Date: {
+      type: Date,
+      default: Date.now,
+    },
+    CheckIn: {
+      type: Date,
+      default: Date.now,
+    },
+  }, { timestamps: true });
 
-// // export default mongoose.model('Attendance', attendanceSchema);
-// import mongoose from "mongoose";
-
-// const attendanceSchema = mongoose.Schema({
-//   member: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: 'Member',
-//     required: true
-//   },
-//   checkIn: { type: Date, required: true },
-//   checkOut: Date,
-// });
-
-// const Attendance = mongoose.model("Attendance", attendanceSchema);
-// export default Attendance;
+  const Attendance = mongoose.model("Attendance", attendanceSchema);
+export default Attendance;

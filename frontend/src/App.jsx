@@ -9,7 +9,7 @@ import HomeScreen from "./screens/homeScreen";
 import MemberDetailsView from "./screens/MemberDetailsView";
 import EditMenber from "./screens/EditMember"
 import EditMember from "./screens/EditMember";
-
+import AttendanceView from "./screens/AttendanceView"
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
@@ -60,6 +60,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <EditMember />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/attendanceView"
+            element={
+              <ProtectedRoute>
+                <AttendanceView />
               </ProtectedRoute>
             }
           />

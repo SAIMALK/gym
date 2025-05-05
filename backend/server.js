@@ -1,8 +1,7 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import cors from 'cors';
 import memberRoutes from './routes/memberRoutes.js';
-// import attendanceRoutes from './routes/attendanceRoutes.js';
+import attendanceRoutes from './routes/attendanceRoutes.js';
 import authRoute from "./routes/authRoute.js"
 import dotenv from 'dotenv';
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -15,7 +14,7 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 app.use(cors({
-  origin: ['http://localhost:5173','https://bodyfuel.netlify.app'], // frontend origin
+  origin: ['http://localhost:5173','https://bodyfuel.netlify.app','http://localhost:5085','http://localhost:5000'], // frontend origin
   
   credentials: true,
 }));
@@ -23,7 +22,7 @@ app.use(cors({
 // mongoose.connect('mongodb://127.0.0.1:27017/gym_attendance3');
 
 app.use('/api/members', memberRoutes);
-// app.use('/api/attendance', attendanceRoutes);
+app.use('/api/attendance', attendanceRoutes);
 app.use("/api/auth", authRoute);
 app.get('/', (req, res) => {
   res.send('API is running...');

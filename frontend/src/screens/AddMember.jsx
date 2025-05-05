@@ -213,8 +213,8 @@ function AddMember() {
               }
             >
               <option value="">Select Membership Type</option>
+              <option value="Daily">Daily</option>
               <option value="Monthly">Monthly</option>
-              <option value="Quarterly">Quarterly</option>
               <option value="Yearly">Yearly</option>
             </Form.Control>
           </Form.Group>
