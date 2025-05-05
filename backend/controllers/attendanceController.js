@@ -1,52 +1,104 @@
-import Attendance from "../models/attendanceModel.js";
-import Member from "../models/memberModel.js";
+// import Attendance from "../models/attendanceModel.js";
+// import Member from "../models/memberModel.js";
+// import Fingerprint from "../models/fingerprintModel.js";
 
-// @desc    Mark attendance
-// @route   POST /api/attendance
-// @access  Private
- const markAttendance = async (req, res) => {
-  const { memberId, date } = req.body;
+// // @desc    Handle check-in/check-out via fingerprint
+// // @route   POST /api/attendance
+// // @access  Private
+// const handleAttendance = async (req, res) => {
+//   try {
+//     const { fingerprintId } = req.body;
+    
+//     if (!fingerprintId) {
+//       return res.status(400).json({ message: "Fingerprint ID is required" });
+//     }
 
-  if (!memberId) {
-    return res.status(400).json({ message: "Member ID is required" });
-  }
+//     // Get member from fingerprint
+//     const fingerprint = await Fingerprint.findOne({ fingerprintId })
+//       .populate('member');
+    
+//     if (!fingerprint || !fingerprint.member) {
+//       return res.status(404).json({ message: "Fingerprint not registered" });
+//     }
 
-  const member = await Member.findById(memberId);
-  if (!member) {
-    return res.status(404).json({ message: "Member not found" });
-  }
+//     const member = fingerprint.member;
+    
+//     // Get today's attendance record
+//     const todayStart = new Date().setHours(0, 0, 0, 0);
+//     const todayEnd = new Date().setHours(23, 59, 59, 999);
+    
+//     let attendance = await Attendance.findOne({
+//       member: member._id,
+//       date: { $gte: todayStart, $lte: todayEnd }
+//     });
 
-  // Check if attendance already exists for this member on this date
-  const existing = await Attendance.findOne({
-    member: memberId,
-    date: {
-      $gte: new Date(new Date(date || Date.now()).setHours(0, 0, 0, 0)),
-      $lte: new Date(new Date(date || Date.now()).setHours(23, 59, 59, 999)),
-    },
-  });
+//     if (!attendance) {
+//       // Check in
+//       attendance = new Attendance({
+//         member: member._id,
+//         checkInTime: Date.now(),
+//         date: Date.now()
+//       });
+//       await attendance.save();
+//       return res.status(201).json({
+//         action: 'checked-in',
+//         attendance,
+//         member: {
+//           name: member.name,
+//           membershipType: member.membershipType
+//         }
+//       });
+//     } else if (!attendance.checkOutTime) {
+//       // Check out
+//       attendance.checkOutTime = Date.now();
+//       await attendance.save();
+//       return res.status(200).json({
+//         action: 'checked-out',
+//         attendance,
+//         member: {
+//           name: member.name,
+//           membershipType: member.membershipType
+//         }
+//       });
+//     }
 
-  if (existing) {
-    return res.status(400).json({ message: "Attendance already marked for today" });
-  }
+//     return res.status(400).json({ message: "Attendance already completed for today" });
 
-  const attendance = new Attendance({
-    member: memberId,
-    date: date || Date.now(),
-  });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
 
-  const saved = await attendance.save();
-  res.status(201).json(saved);
-};
+// // @desc    Get attendance records with filters
+// // @route   GET /api/attendance
+// // @access  Private
+// const getAttendance = async (req, res) => {
+//   try {
+//     const { startDate, endDate, memberId } = req.query;
+//     const filter = {};
 
-// @desc    Get attendance records
-// @route   GET /api/attendance
-// @access  Private
- const getAttendance = async (req, res) => {
-  const attendance = await Attendance.find().populate("member", "name email");
-  res.json(attendance);
-};
+//     if (startDate && endDate) {
+//       filter.date = {
+//         $gte: new Date(startDate),
+//         $lte: new Date(endDate)
+//       };
+//     }
 
-export{
-markAttendance,
-getAttendance,
-};
+//     if (memberId) {
+//       filter.member = memberId;
+//     }
+
+//     const attendance = await Attendance.find(filter)
+//       .populate("member", "name email membershipType")
+//       .sort({ date: -1 });
+
+//     res.json(attendance);
+    
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Server error", error: error.message });
+//   }
+// };
+
+// export { handleAttendance, getAttendance };

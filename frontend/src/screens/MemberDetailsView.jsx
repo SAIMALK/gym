@@ -17,7 +17,7 @@ const MemberDetailsView = () => {
   const navigate = useNavigate();
 
   const [member, setMember] = useState(null);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("");  // Default to an empty string
   const [override, setOverride] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,7 +29,10 @@ const MemberDetailsView = () => {
         if (!response.ok) throw new Error("Failed to fetch member");
         const data = await response.json();
         setMember(data);
-        setStatus(data.status || "");
+
+        // Check the status based on membership dates
+        checkStatus(data.membershipStartDate, data.membershipEndDate);
+
         setOverride(data.overrideStatus || false);
         setLoading(false);
       } catch (err) {
@@ -39,6 +42,20 @@ const MemberDetailsView = () => {
     };
     fetchMember();
   }, [id]);
+
+  // Function to check if today's date is within the membership period
+  const checkStatus = (startDate, endDate) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    // If today's date is between start and end dates
+    if (now >= start && now <= end) {
+      setStatus("Active");
+    } else {
+      setStatus("Inactive");
+    }
+  };
 
   const updateStatus = async () => {
     try {
@@ -115,7 +132,7 @@ const MemberDetailsView = () => {
                   </ListGroup.Item>
                   <ListGroup.Item>
                     <Row>
-                      <Col>Join Date:</Col>
+                      <Col>Start Date:</Col>
                       <Col>{new Date(member.membershipStartDate).toLocaleDateString()}</Col>
                     </Row>
                   </ListGroup.Item>
@@ -138,23 +155,15 @@ const MemberDetailsView = () => {
                         <Form.Control
                           size="sm"
                           as="select"
-                          value={status}
+                          value={status}  // Show Active or Inactive based on the status
                           onChange={(e) => setStatus(e.target.value)}
                           style={{ color: getStatusColor(), fontWeight: "bold" }}
                         >
-                          {["Active", "Inactive"].map((x) => (
-                            <option key={x} value={x}>
-                              {x}
-                            </option>
-                          ))}
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
                         </Form.Control>
                       </Col>
                     </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Button className="btn-block" type="button" onClick={updateStatus}>
-                      Update
-                    </Button>
                   </ListGroup.Item>
                 </ListGroup>
               </Card>

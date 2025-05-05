@@ -68,6 +68,7 @@ const HomeScreen = () => {
           <br />
           📧 Email: contact@bodyfuelgym.com
         </p>
+        
       </Container>
     </div>
   );

@@ -7,6 +7,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Header from "./components/Header";
 import HomeScreen from "./screens/homeScreen";
 import MemberDetailsView from "./screens/MemberDetailsView";
+import EditMenber from "./screens/EditMember"
+import EditMember from "./screens/EditMember";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -50,6 +52,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MemberDetailsView />
+              </ProtectedRoute>
+            }
+          />
+           <Route
+            path="/member/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditMember />
               </ProtectedRoute>
             }
           />

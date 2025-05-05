@@ -1,7 +1,8 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import memberRoutes from './routes/memberRoutes.js';
-import attendanceRoutes from './routes/attendanceRoutes.js';
+// import attendanceRoutes from './routes/attendanceRoutes.js';
 import authRoute from "./routes/authRoute.js"
 import dotenv from 'dotenv';
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -19,10 +20,10 @@ app.use(cors({
   credentials: true,
 }));
 
-// mongoose.connect('mongodb://127.0.0.1:27017/gym_attendance');
+// mongoose.connect('mongodb://127.0.0.1:27017/gym_attendance3');
 
 app.use('/api/members', memberRoutes);
-app.use('/api/attendance', attendanceRoutes);
+// app.use('/api/attendance', attendanceRoutes);
 app.use("/api/auth", authRoute);
 app.get('/', (req, res) => {
   res.send('API is running...');
