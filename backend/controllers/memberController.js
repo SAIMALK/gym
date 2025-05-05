@@ -69,21 +69,126 @@ const getMemberById = asyncHandler(async (req, res) => {
 // @desc    Create a member
 // @route   POST /api/members
 // @access  Private/Admin
+// Updated createMember function with improved error handling and validation
 const createMember = asyncHandler(async (req, res) => {
-  // Get the next ID for the member
-  const nextId = await getNextSequenceValue("members");
+  try {
+    // Validate required fields
+    const requiredFields = ['name', 'email', 'phone', 'membershipType', 'membershipStartDate', 'membershipEndDate'];
+    const missingFields = requiredFields.filter(field => !req.body[field]);
+    
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Missing required fields: ${missingFields.join(', ')}`
+      });
+    }
 
-  // Create the new member with the auto-incremented ID
-  const member = new Member({
-    _id: nextId,  // Set the custom integer _id
-    ...req.body,  // Spread the rest of the member data from the request body
-  });
+    // Parse and validate dates
+    let membershipStartDate, membershipEndDate, joinDate;
+    
+    try {
+      membershipStartDate = new Date(req.body.membershipStartDate);
+      membershipEndDate = new Date(req.body.membershipEndDate);
+      joinDate = req.body.joinDate ? new Date(req.body.joinDate) : new Date();
+      
+      // Check if dates are valid
+      if (isNaN(membershipStartDate.getTime()) || isNaN(membershipEndDate.getTime()) || isNaN(joinDate.getTime())) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid date format'
+        });
+      }
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        message: 'Error parsing dates'
+      });
+    }
 
-  // Save the member
-  await member.save();
+    // Handle image data
+    let imageData = null;
+    if (req.body.image) {
+      if (req.body.image.startsWith('data:image')) {
+        // Check the base64 string size
+        const base64WithoutPrefix = req.body.image.split(',')[1] || '';
+        const sizeInBytes = Math.ceil((base64WithoutPrefix.length / 4) * 3);
+        const maxSizeInBytes = 1000000; // 1MB limit
+        
+        if (sizeInBytes > maxSizeInBytes) {
+          return res.status(400).json({
+            success: false,
+            message: 'Image size too large. Please use an image under 1MB.'
+          });
+        }
+        
+        // Keep the image as-is, it's already optimized by the frontend
+        imageData = req.body.image;
+      } else {
+        // It's a URL - keep it as is
+        imageData = req.body.image;
+      }
+    }
 
-  // Respond with the newly created member
-  res.status(201).json(member);
+    // Get the next ID for the member
+    const nextId = await getNextSequenceValue("members");
+
+    // Prepare member data with sanitized values
+    const memberData = {
+      _id: nextId,
+      name: req.body.name,
+      email: req.body.email,
+      phone: req.body.phone,
+      membershipType: req.body.membershipType,
+      membershipStartDate,
+      membershipEndDate,
+      joinDate,
+      image: imageData,
+      fatherName: req.body.fatherName || '',
+      age: req.body.age ? Number(req.body.age) : null,
+      gender: req.body.gender || '',
+      status: new Date() <= membershipEndDate ? "Active" : "Inactive"
+    };
+
+    // Create the new member
+    const member = new Member(memberData);
+
+    // Save the member
+    const savedMember = await member.save();
+
+    // Return success response
+    res.status(201).json({
+      success: true,
+      data: {
+        _id: savedMember._id,
+        name: savedMember.name,
+        email: savedMember.email,
+        status: savedMember.status
+      }
+    });
+
+  } catch (error) {
+    console.error('Error creating member:', error);
+    
+    // Handle specific MongoDB errors
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation Error',
+        details: error.message
+      });
+    } else if (error.code === 11000) {
+      return res.status(400).json({
+        success: false, 
+        message: 'Member with this email already exists'
+      });
+    } else {
+      return res.status(500).json({
+        success: false,
+        message: 'Server error while creating member',
+        details: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+      });
+    }
+  }
 });
 
 
