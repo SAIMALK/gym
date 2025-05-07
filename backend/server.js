@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import memberRoutes from './routes/memberRoutes.js';
 import attendanceRoutes from './routes/attendanceRoutes.js';
+import fingerprintRoutes from './routes/fingerprintRoutes.js'
 import authRoute from "./routes/authRoute.js"
 import dotenv from 'dotenv';
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
@@ -14,7 +15,7 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 app.use(cors({
-  origin: ['http://localhost:5173','https://bodyfuel.netlify.app','http://localhost:5085','http://localhost:5000'], // frontend origin
+  origin: ['http://localhost:5173','https://bodyfuel.netlify.app'], // frontend origin
   
   credentials: true,
 }));
@@ -23,6 +24,7 @@ app.use(cors({
 
 app.use('/api/members', memberRoutes);
 app.use('/api/attendance', attendanceRoutes);
+app.use('/api/fingerprint',fingerprintRoutes);
 app.use("/api/auth", authRoute);
 app.get('/', (req, res) => {
   res.send('API is running...');

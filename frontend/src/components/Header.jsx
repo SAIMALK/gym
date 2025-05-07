@@ -1,10 +1,32 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { Container, Nav, Navbar, NavDropdown } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Container, Nav, Navbar, NavDropdown, Form } from "react-bootstrap";
+
 const Header = ({ isLoggedIn, logout }) => {
   const navigate = useNavigate(); // ✅ Hook for navigation
-
+  const [searchKeyword, setSearchKeyword] = useState("");
+  useEffect(() => {
+    // Update search input when URL changes
+    if (location.pathname === "/members") {
+      const searchParams = new URLSearchParams(location.search);
+      setSearchKeyword(searchParams.get("keyword") || "");
+    } else {
+      setSearchKeyword("");
+    }
+  }, [location]);
+  
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchKeyword(value);
+    // Navigate to members page with search query
+    if (value.trim()) {
+      navigate(`/members?keyword=${encodeURIComponent(value)}&page=1`);
+    } else {
+      navigate("/members?page=1");
+    }
+  };
   // ✅ Handlers
+  const Dashboard = () => navigate("/dashboard");
   const viewMenbers = () => navigate("/members");
   const addMember = () => navigate("/add-member");
   const ViewAttendance = () => navigate("/attendanceView");
@@ -20,10 +42,25 @@ const Header = ({ isLoggedIn, logout }) => {
           
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ml-auto">
+            <Nav className="ml-auto  align-items-center">
               {isLoggedIn ? (
+
                 <>
+                <Nav className="  align-items-left">
+                <Form className="me-3">
+                  <Form.Control
+                    type="search"
+                    placeholder="Search members..."
+                    value={searchKeyword}
+                    onChange={handleSearchChange}
+                    style={{ minWidth: "250px" ,marginRight:"200px"}}
+
+                  />
+                </Form>
+                </Nav>
                   <NavDropdown title="More">
+
+                  <NavDropdown.Item onClick={Dashboard}>Dashboard</NavDropdown.Item>
                    
                       <NavDropdown.Item onClick={viewMenbers}>View Menbers</NavDropdown.Item>
                     

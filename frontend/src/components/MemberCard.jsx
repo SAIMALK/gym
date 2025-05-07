@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 
 const MemberCard = ({ member }) => {
   return (
-    <Card className="my-3 p-3 rounded shadow-sm">
+    <Card className="my-3 p-3 rounded shadow-lg card-equal-height">
       <Link to={`/member/${member._id}`}>
         {member.image ? (
-          <Image src={member.image} rounded fluid />
+          <Image className="shadow-sm" src={member.image} rounded fluid />
         ) : (
           <div className="w-full h-48 flex items-center justify-center bg-gray-200 text-gray-500">
             No Image
@@ -20,7 +20,9 @@ const MemberCard = ({ member }) => {
             <strong>{member.name}</strong>
           </Card.Title>
         </Link>
-
+        <Row>
+          <Col>ID: { member._id}</Col>
+        </Row>
         <Row>
           <Col>Phone: <a href={`tel:${member.phone}`}>{member.phone}</a></Col>
         </Row>

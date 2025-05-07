@@ -2,7 +2,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import Attendance from "../models/attendanceModel.js";
 import Member from "../models/memberModel.js";
 
-export const getAttendanceByDate = asyncHandler(async (req, res) => {
+ const getAttendanceByDate = asyncHandler(async (req, res) => {
     try { 
   const { date } = req.query;
   if (!date) {
@@ -67,3 +67,31 @@ export const getAttendanceByDate = asyncHandler(async (req, res) => {
     });
   }
 });
+
+const getAttendance = asyncHandler(async (req, res) => {
+  const today = new Date();
+  const startOfDay = new Date(today.setHours(0, 0, 0, 0)); // Start of today (00:00:00)
+  const endOfDay = new Date(today.setHours(23, 59, 59, 999)); // End of today (23:59:59)
+
+  try {
+    // Count the attendance records for today
+    const Count = await Attendance.countDocuments({
+      CheckIn: { $gte: startOfDay, $lte: endOfDay }
+    });
+
+    res.status(200).json({
+      success: true,
+      Count,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+export {
+  getAttendanceByDate,
+  getAttendance
+}

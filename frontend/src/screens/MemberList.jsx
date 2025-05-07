@@ -10,29 +10,34 @@ import {
 import MemberCard from "../components/MemberCard";
 import Loading from "../components/loader";
 import Message from "../components/message";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { BASE_URL } from "../constants";
+import Paginate from "../components/paginate";
 
 function MemberList() {
   const [members, setMembers] = useState([]);
   const [isGrid, setIsGrid] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchParams] = useSearchParams();
+  const keyword = searchParams.get("keyword") || "";
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const [pages, setPages] = useState(1);
 
   useEffect(() => {
+    setLoading(true);
     const token = localStorage.getItem("token");
-    fetch(`${BASE_URL}/api/members`, {
+    fetch(`${BASE_URL}/api/members?keyword=${encodeURIComponent(keyword)}&pageNumber=${currentPage}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
+    .then((res) => res.json())
       .then((data) => {
         setLoading(false);
-        if (Array.isArray(data)) {
-          setMembers(data);
-        } else if (Array.isArray(data.members)) {
+        if (Array.isArray(data.members)) {
           setMembers(data.members);
+          setPages(data.pages);
         } else {
           setError("No members found");
         }
@@ -41,7 +46,7 @@ function MemberList() {
         setLoading(false);
         setError("Failed to fetch members");
       });
-  }, []);
+  }, [keyword, currentPage]); // Use currentPage from URL params
 
   return (
     <Container>
@@ -67,7 +72,6 @@ function MemberList() {
       </Row>
 
       <h1>Members</h1>
-
       {loading ? (
         <Loading />
       ) : error ? (
@@ -88,6 +92,7 @@ function MemberList() {
             <tr>
               <th>Image</th>
               <th>Name</th>
+              <th>Id</th>
               <th>Email</th>
               <th>Father's Name</th>
               <th>Age</th>
@@ -123,6 +128,7 @@ function MemberList() {
                     {m.name}
                   </Link>
                 </td>
+                <td>{m._id}</td>
                 <td>{m.email}</td>
                 <td>{m.fatherName}</td>
                 <td>{m.age}</td>
@@ -133,7 +139,15 @@ function MemberList() {
               </tr>
             ))}
           </tbody>
-        </Table>
+        </Table>      
+        
+      )}
+      {!loading && !error && members.length > 0 && (
+        <Paginate 
+          pages={pages} 
+          page={currentPage} 
+          keyword={keyword ? keyword : ""}
+        />
       )}
     </Container>
   );

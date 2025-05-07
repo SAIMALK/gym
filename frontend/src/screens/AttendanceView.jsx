@@ -8,6 +8,10 @@ const AttendanceView = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const handlePrint = () => {
+    window.print();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -43,11 +47,43 @@ const AttendanceView = () => {
           <Button variant="primary" type="submit" disabled={loading}>
             {loading ? 'Loading...' : 'Get Records'}
           </Button>
+          <Button 
+              variant="outline-dark" 
+              onClick={handlePrint}
+              disabled={loading}
+              className="ml-auto d-block"            >
+              Print Report
+            </Button>
         </Form.Group>
       </Form>
-
+      <style>{`
+        @media print {
+          body * {
+            visibility: hidden;
+          }
+          .print-section, .print-section * {
+            visibility: visible;
+          }
+          .print-section {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+          }
+          .table {
+            font-size: 14px;
+          }
+          .table thead th {
+            background-color: #f8f9fa !important;
+            color: #000 !important;
+          }
+          .table-bordered td, .table-bordered th {
+            border: 1px solid #dee2e6 !important;
+          }
+        }
+      `}</style>
       {error && <div className="alert alert-danger">{error}</div>}
-
+      <div className="print-section">
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -82,7 +118,9 @@ const AttendanceView = () => {
           )}
         </tbody>
       </Table>
+        </div>
     </div>
+
   );
 };
 

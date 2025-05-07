@@ -3,6 +3,28 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import Member from "../models/memberModel.js";
 import Counter from "../models/counterModel.js";
 
+const getMembers = asyncHandler(async (req, res) => {
+  const pageSize = 4;
+  const page = Number(req.query.pageNumber) || 1;
+
+  const keyword = req.query.keyword
+    ?  {
+      $or: [
+        { name: { $regex: req.query.keyword, $options: 'i' } },
+        { email: { $regex: req.query.keyword, $options: 'i' } },
+        { phone: { $regex: req.query.keyword, $options: 'i' } }
+      ]
+    }
+  : {};
+  const count = await Member.countDocuments({ ...keyword });
+  const members = await Member.find({ ...keyword })
+  .limit(pageSize)
+  .skip(pageSize * (page - 1));
+
+  res.json({members,count, page, pages: Math.ceil(count / pageSize) });
+});
+
+
 const getNextSequenceValue = async (collectionName) => {
   const result = await Counter.findOneAndUpdate(
     { _id: collectionName },  // Look for the collection name
@@ -13,26 +35,7 @@ const getNextSequenceValue = async (collectionName) => {
   return result.seq;  // Return the incremented ID
 };
 
-const getMembers = asyncHandler(async (req, res) => {
-  const pageSize = process.env.PAGINATION_LIMIT;
-  const page = Number(req.query.pageNumber) || 1;
 
-  const keyword = req.query.keyword
-    ? {
-        title: {
-          $regex: req.query.keyword,
-          $options: "i",
-        },
-      }
-    : {};
-
-  const count = await Member.countDocuments({ ...keyword });
-  const members = await Member.find({ ...keyword })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
-
-  res.json({ members, page, pages: Math.ceil(count / pageSize) });
-});
 
 // @desc    Fetch single member
 // @route   GET /api/member/:id

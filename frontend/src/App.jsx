@@ -10,6 +10,7 @@ import MemberDetailsView from "./screens/MemberDetailsView";
 import EditMenber from "./screens/EditMember"
 import EditMember from "./screens/EditMember";
 import AttendanceView from "./screens/AttendanceView"
+import Dashboard from "./screens/Dashboard";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
 
@@ -71,6 +72,15 @@ function App() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+         
         </Routes>
       </div>
     </BrowserRouter>

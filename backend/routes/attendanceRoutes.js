@@ -1,10 +1,12 @@
 
 import express from "express";
 const router = express.Router();
-import { getAttendanceByDate } from "../controllers/attendanceController.js";
+import { getAttendanceByDate, getAttendance } from "../controllers/attendanceController.js";
 
 
 router.route("/")
   .get( getAttendanceByDate)
+  router.route("/getAttendance")
+  .get( getAttendance)
 
 export default router;
