@@ -31,6 +31,9 @@ function LoginPage({ onLogin }) {
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({ username, password }),
+      console.log("Payload", { username, password });
+      console.log(body);
+
     });
   
     if (res.ok) {
