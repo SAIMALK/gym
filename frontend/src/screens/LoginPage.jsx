@@ -13,39 +13,45 @@ function LoginPage({ onLogin }) {
 
   const navigate = useNavigate();
 
-  const submitHandler = async (event) => {
-    event.preventDefault(); // ⬅️ Prevents page reload
-  
-    // Optional: Check empty fields manually before sending request
-    if (!username) {
-      setUsernameEmpty(true);
-      return;
-    }
-    if (!password) {
-      setPasswordEmpty(true);
-      return;
-    }
-  
+const submitHandler = async (event) => {
+  event.preventDefault();
+
+  if (!username) {
+    setUsernameEmpty(true);
+    return;
+  }
+  if (!password) {
+    setPasswordEmpty(true);
+    return;
+  }
+
+  const payload = { username, password };
+  console.log("Payload", payload); // ✅ Debug before request
+
+  try {
     const res = await fetch(`${BASE_URL}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ username, password }),
-      console.log("Payload", { username, password });
-      console.log(body);
-
+      body: JSON.stringify(payload),
     });
-  
+
     if (res.ok) {
       const { token } = await res.json();
       localStorage.setItem("token", token);
       onLogin();
       navigate("/members");
     } else {
-      alert("Login failed");
+      const errorData = await res.json();
+      console.error("Login failed:", errorData);
+      alert(errorData.message || "Login failed");
     }
-  };
-  
+  } catch (error) {
+    console.error("Network or server error:", error);
+    alert("An error occurred. Please try again.");
+  }
+};
+
   return (
     <div
     className="container"
