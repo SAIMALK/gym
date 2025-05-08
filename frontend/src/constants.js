@@ -1,3 +1,3 @@
-export const BASE_URL = 'https://gym-back-ten.vercel.app';
+export const BASE_URL = 'https://gym-bf-backend.vercel.app';
 
 
